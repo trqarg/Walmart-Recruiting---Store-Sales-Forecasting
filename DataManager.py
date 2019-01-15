@@ -13,18 +13,17 @@ warnings.filterwarnings(action='ignore', category=DataConversionWarning)
 
 class DataManager(object):
 
-    def __init__(self, input_table, output_table):
+    def __init__(self,):
 
-        self.input_table = input_table
-        self.output_table = output_table
         self.basePath = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+        self.inputPath = os.path.join(self.basePath, 'Data')
 
 
     def load_input(self,):
-        ''' load input from Database'''
-        df_train = pd.read_csv(os.path.join(self.basePath, 'train.csv'))
+        ''' load input'''
+        df_train = pd.read_csv(os.path.join(self.inputPath, 'train.csv'))
 
-        df_test = pd.read_csv(os.path.join(self.basePath, 'test.csv'))
+        df_test = pd.read_csv(os.path.join(self.inputPath, 'test.csv'))
 
         return df_train, df_test
 
@@ -50,10 +49,3 @@ class DataManager(object):
                 cur_date += relativedelta(minutes=1)
             periods.append(cur_date)
         return periods
-
-
-    def save_forecast(self, prediction, output_table):
-        '''Save Model on Database'''
-        self.dao.upload_from_dataframe(prediction, output_table, if_exists='append')
-
-

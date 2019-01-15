@@ -31,7 +31,7 @@ class Forecaster(ABC):
         self.fecha_cat_test = dict(enumerate(df_train['Date'].cat.categories))
         df_train["Date"] = df_train["Date"].cat.codes
 
-        self.x_values = self.df_train.iloc[:, 0: 1]
+        self.x_values = self.df_train.iloc[:, 0: 1].values
         self.y_values = self.df_train['Weekly_Sales']
 
         self.df_test = df_test
@@ -40,7 +40,7 @@ class Forecaster(ABC):
         self.fecha_cat_train = dict(enumerate(df_test['Date'].cat.categories))
         df_test["Date"] = df_test["Date"].cat.codes
 
-        self.x_values_ahead = self.df_test.iloc[:, 0: 1]
+        self.x_values_ahead = self.df_test.iloc[:, 0: 1].values
 
         '''SCALING DATA'''
         self.scalerX = MinMaxScaler(feature_range=(0, 1)).fit(self.x_values)
