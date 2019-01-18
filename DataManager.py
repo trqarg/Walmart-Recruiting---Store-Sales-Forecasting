@@ -30,7 +30,7 @@ class DataManager(object):
 
     def getPeriods(self, start, forecast_horizon, period_type):
         '''Build periods to predict from starting date'''
-        start = datetime.datetime.strptime(start, '%Y-%m-%d %I:%M')
+        start = datetime.datetime.strptime(start, '%Y-%m-%d')
         if period_type == 'days':
             end = start + relativedelta(days=+(forecast_horizon - 1) * 1)
         elif period_type == 'hours':

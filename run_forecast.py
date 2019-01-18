@@ -27,34 +27,36 @@ if __name__ == '__main__':
 
         for dep in depts:
 
-            print('Running Store:' + str(store) + 'Dept: ' + str(dep))
+            try:
 
-            train = df_train.loc[(df_train['Store'] == store) & (df_train['Dept'] == dep)]
-            test = df_test.loc[(df_test['Store'] == store) & (df_test['Dept'] == dep)]
+                print('Running Store:' + str(store) + 'Dept: ' + str(dep))
 
-            print(train)
+                train = df_train.loc[(df_train['Store'] == store) & (df_train['Dept'] == dep)]
+                test = df_test.loc[(df_test['Store'] == store) & (df_test['Dept'] == dep)]
 
-            cf = getattr(Forecaster, 'LSTMForecaster')(df_train=train, df_test=test)
+                dates = dm.getPeriods('2012-06-01', 10, 'days')
 
-            print('=== BUILDING MODEL ===')
+                print(train)
 
-            model = cf.build_model()
+                cf = getattr(Forecaster, 'LSTMForecaster')(df_train=train, df_test=test)
 
-            print('=== TRAINING MODEL ===')
+                print('=== BUILDING MODEL ===')
 
-            trained_model = cf.train_model(model)
+                model = cf.build_model()
 
-            print('=== RUNNING FORECAST ===')
+                print('=== TRAINING MODEL ===')
 
-            prediction = cf.run_forecast(trained_model)
+                trained_model = cf.train_model(model)
 
-            # df_test_fu['Dept'] = dep
-            # df_test_fu['prediction'] = prediction
-            # df_test_fu['Date'] = dates
-            # df_test_fu['lag'] = np.arange(len(df_test_fu)) + 1
-            #
-            # df_test_fu['prediction'][df_test_fu['prediction'] < 0] = 0
+                print('=== RUNNING FORECAST ===')
 
-            print('=== SAVING FORECAST ===')
+                prediction = cf.run_forecast(trained_model)
+
+                print(prediction)
+
+                print('=== SAVING FORECAST ===')
+
+            except Exception as e:
+                print('Not Enough Data: ', str(e))
 
     print('=== PROCESS COMPLETED ===')
