@@ -29,14 +29,12 @@ if __name__ == '__main__':
 
             try:
 
-                print('Running Store:' + str(store) + 'Dept: ' + str(dep))
+                print('Running Store:' + str(store) + '  Dept: ' + str(dep))
 
                 train = df_train.loc[(df_train['Store'] == store) & (df_train['Dept'] == dep)]
                 test = df_test.loc[(df_test['Store'] == store) & (df_test['Dept'] == dep)]
 
-                dates = dm.getPeriods('2012-06-01', 10, 'days')
-
-                print(train)
+                dates = dm.getPeriods('2012-06-01', len(test), 'days')
 
                 cf = getattr(Forecaster, 'LSTMForecaster')(df_train=train, df_test=test)
 
@@ -52,9 +50,13 @@ if __name__ == '__main__':
 
                 prediction = cf.run_forecast(trained_model)
 
-                print(prediction)
+                final = pd.DataFrame(prediction, columns=['prediction'])
+                final['date'] = dates
 
                 print('=== SAVING FORECAST ===')
+
+                print(final['prediction'])
+                print(test['Weekly_Sales'])
 
             except Exception as e:
                 print('Not Enough Data: ', str(e))

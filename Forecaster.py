@@ -1,23 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod
-from sklearn.neural_network import MLPClassifier, MLPRegressor
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
 from keras.layers import Dense, LSTM, Dropout
 from keras.models import Sequential
-from sklearn.svm import SVC, SVR
-from sklearn.linear_model import LinearRegression, SGDRegressor
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_score
-import xgboost as xgb
-from keras import backend as be
-from keras.callbacks import EarlyStopping
-from bayes_opt import BayesianOptimization
-from sklearn.metrics import roc_auc_score, average_precision_score, roc_curve
-from sklearn.metrics import confusion_matrix
-import json
-import numpy as np
 
 
 class Forecaster(ABC):
@@ -27,18 +13,18 @@ class Forecaster(ABC):
     def __init__(self, df_train, df_test):
         self.df_train = df_train
 
-        df_train["Date"] = df_train["Date"].astype('category')
-        self.fecha_cat_test = dict(enumerate(df_train['Date'].cat.categories))
-        df_train["Date"] = df_train["Date"].cat.codes
+        # df_train["Date"] = df_train["Date"].astype('category')
+        # self.fecha_cat_test = dict(enumerate(df_train['Date'].cat.categories))
+        # df_train["Date"] = df_train["Date"].cat.codes
 
         self.x_values = self.df_train.iloc[:, 0: 1].values
         self.y_values = self.df_train['Weekly_Sales']
 
         self.df_test = df_test
 
-        df_test["Date"] = df_test["Date"].astype('category')
-        self.fecha_cat_train = dict(enumerate(df_test['Date'].cat.categories))
-        df_test["Date"] = df_test["Date"].cat.codes
+        # df_test["Date"] = df_test["Date"].astype('category')
+        # self.fecha_cat_train = dict(enumerate(df_test['Date'].cat.categories))
+        # df_test["Date"] = df_test["Date"].cat.codes
 
         self.x_values_ahead = self.df_test.iloc[:, 0: 1].values
 
@@ -60,6 +46,7 @@ class Forecaster(ABC):
     @abstractmethod
     def run_forecast(self, classifier):
         pass
+
 
 class LSTMForecaster(Forecaster):
 
@@ -84,7 +71,7 @@ class LSTMForecaster(Forecaster):
 
     def train_model(self, classifier, bayesian=False):
         ''' Trains the Long Short Term Memory Neural Net'''
-        classifier.fit(self.x_values, self.y_values, epochs=1000, batch_size=1, verbose=0, shuffle=False)
+        classifier.fit(self.x_values, self.y_values, epochs=10, batch_size=500, verbose=0, shuffle=False)
         return classifier
 
     def run_forecast(self, classifier):
